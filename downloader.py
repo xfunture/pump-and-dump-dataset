@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 from datetime import timedelta
 import time
-
+import sys
 
 binance = ccxt.binance()
 
@@ -65,8 +65,9 @@ def download_binance(days_before=7, days_after=7):
     @param days_before: the number of days before the pump
     @param days_after: the number of days after the pump
     '''
-
-    df = pd.read_csv('pump_telegram.csv')
+    path = sys.argv[1]
+    print("path:",path)
+    df = pd.read_csv(path)
     binance_only = df[df['exchange'] == 'binance']
 
     for i, pump in binance_only.iterrows():

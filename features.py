@@ -7,6 +7,14 @@ import pandas as pd
 path = 'data/*.csv'
 
 def std_rush_order_feature(df_buy, time_freq, rolling_freq):
+    """
+        compute std of rush order
+        rush_order：orders with the same millionseconds time are combined
+    @param df_buy:
+    @param time_freq:
+    @param rolling_freq:
+    @return:
+    """
     df_buy = df_buy.groupby(df_buy.index).count()
     df_buy[df_buy == 1] = 0
     df_buy[df_buy > 1] = 1
@@ -100,6 +108,8 @@ def build_features(file, coin, time_freq, rolling_freq, index):
 
     df_buy_grouped = df_buy.groupby(pd.Grouper(freq=time_freq))
 
+    #获取groupby 后的索引，将时间序列按照25s的周期进行重采样
+    #该函数只是返回索引
     date = chunks_time(df_buy_grouped)
 
     results_df = pd.DataFrame(
