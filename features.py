@@ -10,6 +10,10 @@ def std_rush_order_feature(df_buy, time_freq, rolling_freq):
     """
         compute std of rush order
         rush_order：orders with the same millionseconds time are combined
+        根据列time 进行groupby ,然后对数据重采样(降采样)，计算降采样后的25Sbtc_volume 的和
+        区别于作者构建的特征，作者构建的特征先根据时间索引(毫秒级别)进行groupby 然后count,
+        凡是只出现一次的时间索引，都置为了0，他会把只出现一次的时间索引都丢掉
+        作者这样做只考虑时间（精确到毫秒）相同的订单，只对时间相同的订单按照25秒进行合并
     @param df_buy:
     @param time_freq:
     @param rolling_freq:
@@ -121,7 +125,7 @@ def build_features(file, coin, time_freq, rolling_freq, index):
          'std_volume': std_volume_feature(df_buy_grouped, rolling_freq).values,
          'avg_volume': avg_volume_feature(df_buy_grouped, rolling_freq).values,
          'std_price': std_price_feature(df_buy_grouped, rolling_freq).values,
-         'avg_price': avg_price_feature(df_buy_grouped),
+         'avg_price': avg_price_feature(df_buy_grouped).values,
          'avg_price_max': avg_price_max(df_buy_grouped).values,
          'hour_sin': np.sin(2 * np.pi * date.hour/23),
          'hour_cos': np.cos(2 * np.pi * date.hour/23),

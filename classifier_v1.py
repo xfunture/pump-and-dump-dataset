@@ -8,7 +8,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 def classifier(time_freq):
 
-    computed_data = pd.read_csv('labeled_features/features_' + time_freq + '.csv.gz', parse_dates=['date'])
+    computed_data = pd.read_csv('labeled_features/my_features_' + time_freq + '.csv', parse_dates=['date'])
 
     features = ['std_rush_order',
                 'avg_rush_order',

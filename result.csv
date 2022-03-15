@@ -1,0 +1,63 @@
+------------------------------------------------------------------------------------------------------
+根据作者自己生成的特征文件，训练的模型
+features:25s
+Processing: 5 folds - time freq 25S
+Recall: 0.889589905362776
+Precision: 0.9657534246575342
+F1 score: 0.9261083743842365
+
+Processing: 5 folds - time freq 15S
+Recall: 0.8548895899053628
+Precision: 0.9678571428571429
+F1 score: 0.9078726968174204
+
+Processing: 5 folds - time freq 5S
+Recall: 0.7350157728706624
+Precision: 0.9433198380566802
+F1 score: 0.8262411347517731
+0:03:54.373814
+
+
+-----------------------------------------------------------------------------------------------------
+在原有代码的基础上，稍微修改了特征的生成方式
+主要是两个特征函数：
+function:std_rush_order_feature
+avg_rush_order_feature
+
+
+Processing: 5 folds - time freq 25S
+Recall: 0.655786350148368
+Precision: 0.8185185185185185
+F1 score: 0.7281713344316311
+
+Processing: 5 folds - time freq 15S
+Recall: 0.5637982195845698
+Precision: 0.8296943231441049
+F1 score: 0.6713780918727915
+
+Processing: 5 folds - time freq 5S
+Recall: 0.39465875370919884
+Precision: 0.7916666666666666
+F1 score: 0.5267326732673268
+0:03:53.793114
+
+
+-----------------------------------------------------------------------------------------------------
+#特征按照作者原有代码，合并作者的标签文件，再生成my_features_25S.csv
+
+Processing: 5 folds - time freq 25S
+Recall: 0.6824925816023739
+Precision: 0.8518518518518519
+F1 score: 0.7578253706754531
+
+Processing: 5 folds - time freq 15S
+Recall: 0.5756676557863502
+Precision: 0.8584070796460177
+F1 score: 0.6891651865008882
+
+
+Processing: 5 folds - time freq 5S
+Recall: 0.4658753709198813
+Precision: 0.9181286549707602
+F1 score: 0.6181102362204725
+0:04:53.363457

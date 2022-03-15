@@ -6,6 +6,7 @@ from datetime import timedelta
 import time
 import sys
 import os
+import shutil
 
 binance = ccxt.binance()
 
@@ -75,18 +76,24 @@ def download_binance(days_before=7, days_after=7):
     number = 0
     for i, pump in binance_only.iterrows():
         symbol = pump['symbol']
+        group = pump['group']
         date = pump['date'] + ' ' + pump['hour']
         pump_time = datetime.strptime(date, "%Y-%m-%d %H:%M")
         before = to_timestamp(pump_time - timedelta(days=days_before))
         after = to_timestamp(pump_time + timedelta(days=days_after))
         # to comment out
-        if os.path.exists('data/{}_{}'.format(symbol, str(date).replace(':', '.') + '.csv')) is True:
-            print(symbol)
+        src = 'data/{}_{}'.format(symbol, str(date).replace(':', '.') + '.csv')
+        target = 'data/new_data/{}_{}_{}'.format(symbol,group, str(date).replace(':', '.') + '.csv')
+
+
+        if os.path.exists(src) and os.path.exists(target) is False:
+            print(symbol,' copy')
+            shutil.copy(src,target)
             number += 1
             continue
         #
-        df = download(symbol, before, after)
-        df.to_csv('data/{}_{}'.format(symbol, str(date).replace(':', '.') + '.csv'), index=False)
+        # df = download(symbol, before, after)
+        # df.to_csv('data/new_data/{}_{}_{}'.format(symbol,group, str(date).replace(':', '.') + '.csv'), index=False)
 
     print('数据总数：',binance_only.shape[0])
     print("已下载数据总数：",number)
