@@ -125,7 +125,7 @@ def build_features(file, coin, time_freq, rolling_freq, index):
          'std_volume': std_volume_feature(df_buy_grouped, rolling_freq).values,
          'avg_volume': avg_volume_feature(df_buy_grouped, rolling_freq).values,
          'std_price': std_price_feature(df_buy_grouped, rolling_freq).values,
-         'avg_price': avg_price_feature(df_buy_grouped).values,
+         'avg_price': avg_price_feature(df_buy_grouped),
          'avg_price_max': avg_price_max(df_buy_grouped).values,
          'hour_sin': np.sin(2 * np.pi * date.hour/23),
          'hour_cos': np.cos(2 * np.pi * date.hour/23),

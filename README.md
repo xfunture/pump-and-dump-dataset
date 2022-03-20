@@ -118,4 +118,4 @@ zs1uw83xkwr2rl3hrphxy0sdpnvlgusy9au940af5423f06ntxev6qqzu7hqwhmn5td5a035jzczt9
 
 
 data/new_data:目录存储重新下载的数据，这些数据和原有数据相同，只是文件名添加了group
-
+symbol,timestamp,datetime,side,price,amount,btc_volume

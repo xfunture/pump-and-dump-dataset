@@ -46,6 +46,7 @@ def download(symbol, start, end):
                 since += ten_minutes
 
             for l in orders:
+                print(l)
                 records.append({
                     'symbol': l['symbol'],
                     'timestamp': l['timestamp'],
@@ -92,7 +93,7 @@ def download_binance(days_before=7, days_after=7):
             number += 1
             continue
         #
-        # df = download(symbol, before, after)
+        df = download(symbol, before, after)
         # df.to_csv('data/new_data/{}_{}_{}'.format(symbol,group, str(date).replace(':', '.') + '.csv'), index=False)
 
     print('数据总数：',binance_only.shape[0])

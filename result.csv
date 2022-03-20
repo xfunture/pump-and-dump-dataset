@@ -23,6 +23,14 @@ F1 score: 0.8262411347517731
 主要是两个特征函数：
 function:std_rush_order_feature
 avg_rush_order_feature
+把下面三句代码删掉了,这两句代码删掉代表的是没有rush order 这个概念了
+rush order 代表的是将同一个时间戳的buy order 合并起来统计交易量移动平均值和标准差
+如果没有以下三行代码，纯粹就是交易量的移动平均值和标准差。
+这篇论文创新的地方就在提出了一个全新的概念:rush order
+
+    df_buy = df_buy.groupby(df_buy.index).count()
+    df_buy[df_buy == 1] = 0
+    df_buy[df_buy > 1] = 1
 
 
 Processing: 5 folds - time freq 25S
@@ -45,19 +53,77 @@ F1 score: 0.5267326732673268
 -----------------------------------------------------------------------------------------------------
 #特征按照作者原有代码，合并作者的标签文件，再生成my_features_25S.csv
 
-Processing: 5 folds - time freq 25S
+
+Processing: 5 folds - time freq 25S rolling window:900
 Recall: 0.6824925816023739
 Precision: 0.8518518518518519
 F1 score: 0.7578253706754531
 
-Processing: 5 folds - time freq 15S
+Processing: 5 folds - time freq 15S rolling window:900
 Recall: 0.5756676557863502
 Precision: 0.8584070796460177
 F1 score: 0.6891651865008882
 
 
-Processing: 5 folds - time freq 5S
+Processing: 5 folds - time freq 5S rolling window:700
 Recall: 0.4658753709198813
 Precision: 0.9181286549707602
 F1 score: 0.6181102362204725
 0:04:53.363457
+
+
+
+
+
+rolling window 调整为2个小时
+Processing: 5 folds - time freq 25S
+Recall: 0.6943620178041543
+Precision: 0.8830188679245283
+F1 score: 0.7774086378737541
+
+Processing: 5 folds - time freq 15S
+Recall: 0.6053412462908012
+Precision: 0.8869565217391304
+F1 score: 0.7195767195767195
+
+Processing: 5 folds - time freq 5S
+Recall: 0.43154761904761907
+Precision: 0.8682634730538922
+F1 score: 0.5765407554671967
+0:04:10.148091
+
+
+
+rolling window 调整为1个小时
+从结果可以看出，缩短rolling window 可以显著提高准确率，达到91%，对召回率影响不大
+但是在chunk size 为5秒的情况下，召回率跌倒了45%
+Processing: 5 folds - time freq 25S rolling window:144
+Recall: 0.6913946587537092
+Precision: 0.91015625
+F1 score: 0.7858347386172007
+
+Processing: 5 folds - time freq 15S  rolling window:240
+Recall: 0.6083086053412463
+Precision: 0.9030837004405287
+F1 score: 0.7269503546099292
+
+Processing: 5 folds - time freq 5S  rolling window:360 半个小时
+Recall: 0.4599406528189911
+Precision: 0.9117647058823529
+F1 score: 0.6114398422090729
+
+
+
+Processing: 5 folds - time freq 25S rolling window:半个小时
+Recall: 0.685459940652819
+Precision: 0.8988326848249028
+F1 score: 0.7777777777777778
+Processing: 5 folds - time freq 15S rolling window:半个小时
+Recall: 0.6142433234421365
+Precision: 0.8922413793103449
+F1 score: 0.727592267135325
+Processing: 5 folds - time freq 5S rolling window:半个小时
+Recall: 0.4599406528189911
+Precision: 0.9117647058823529
+F1 score: 0.6114398422090729
+0:04:36.839311
