@@ -37,66 +37,9 @@ def std_rush_order_feature(df_buy, time_freq, rolling_freq):
 
     return results
 
-def std_rush_order_feature_sell(df_buy, time_freq, rolling_freq):
-    """
-        compute std of rush order
-        rush_order：orders with the same millionseconds time are combined
-        构建std_rush_order 特征
-        根据列time 进行groupby ,然后对数据重采样(降采样)，计算降采样后的25Sbtc_volume 的和
-        这个函数复杂就复杂在你如何定义rush order，什么是rush order
-    @param df_buy:
-    @param time_freq:
-    @param rolling_freq:
-    @return:
-    """
-    # buy_volume = df_buy.groupby(pd.Grouper(freq=time_freq))['btc_volume'].sum()
-    # buy_count = df_buy.groupby(pd.Grouper(freq=time_freq))['btc_volume'].count()
-    # buy_volume.drop(buy_count[buy_count == 0].index, inplace=True)
-    # rolling_df = buy_volume.rolling(window=rolling_freq).std()
-    # results = rolling_df.pct_change()
-    # results.reset_index().set_index('time')
-
-    df_buy = df_buy.groupby(df_buy.index).count()
-    df_buy[df_buy == 1] = 0
-    df_buy[df_buy > 1] = 1
-    buy_volume = df_buy.groupby(pd.Grouper(freq=time_freq))['btc_volume'].sum()
-    buy_count = df_buy.groupby(pd.Grouper(freq=time_freq))['btc_volume'].count()
-    buy_volume.drop(buy_volume[buy_count == 0].index, inplace=True)
-    buy_volume.dropna(inplace=True)
-    rolling_diff = buy_volume.rolling(window=rolling_freq).std()
-    results = rolling_diff.pct_change()
-
-    return results
 
 
 def avg_rush_order_feature(df_buy, time_freq, rolling_freq):
-    """
-        根据buy order 计算rush Order ,然后在对数据进行重采样，最后滚动计算交易量(volume)的的平均值
-    @param df_buy:
-    @param time_freq:
-    @param rolling_freq:
-    @return:
-    """
-    # buy_volume = df_buy.groupby(pd.Grouper(freq=time_freq))['btc_volume'].sum()
-    # buy_count = df_buy.groupby(pd.Grouper(freq=time_freq))['btc_volume'].count()
-    # buy_volume.drop(buy_volume[buy_count == 0].index, inplace=True)
-    # buy_volume.dropna(inplace=True)
-    # rolling_diff = buy_volume.rolling(window=rolling_freq).mean()
-    # results = rolling_diff.pct_change()
-    # results.reset_index().set_index('time')
-
-    df_buy = df_buy.groupby(df_buy.index).count()
-    df_buy[df_buy == 1] = 0
-    df_buy[df_buy > 1] = 1
-    buy_volume = df_buy.groupby(pd.Grouper(freq=time_freq))['btc_volume'].sum()
-    buy_count = df_buy.groupby(pd.Grouper(freq=time_freq))['btc_volume'].count()
-    buy_volume.drop(buy_volume[buy_count == 0].index, inplace=True)
-    buy_volume.dropna(inplace=True)
-    rolling_diff = buy_volume.rolling(window=rolling_freq).std()
-    results = rolling_diff.pct_change()
-    return results
-
-def avg_rush_order_feature_sell(df_buy, time_freq, rolling_freq):
     """
         根据buy order 计算rush Order ,然后在对数据进行重采样，最后滚动计算交易量(volume)的的平均值
     @param df_buy:
@@ -282,25 +225,27 @@ def build_features(file, coin, time_freq, rolling_freq, index):
 
 
     df_buy_grouped = df_buy.groupby(pd.Grouper(freq=time_freq))
+    df_grouped = df.groupby(pd.Grouper(freq=time_freq))
+
 
     #获取groupby 后的索引，将时间序列按照25s的周期进行重采样
     #该函数只是返回索引
-    date = chunks_time(df_buy_grouped)
+    date = chunks_time(df_grouped)
 
     results_df = pd.DataFrame(
         {'date': date,
          'pump_index': index,
-         'std_rush_order': std_rush_order_feature(df_buy, time_freq, rolling_freq).values,
-         'avg_rush_order': avg_rush_order_feature(df_buy, time_freq, rolling_freq).values,
-         'std_rush_order_price':std_rush_order_price(df_buy,time_freq,rolling_freq).values,  #新添加特征，有用
-         'std_rush_order_amount':std_rush_order_amount(df_buy,time_freq,rolling_freq).values,#新添加特征,有用
-         'std_trades': std_trades_feature(df_buy_grouped, rolling_freq).values,
-         'std_volume': std_volume_feature(df_buy_grouped, rolling_freq).values,
-         'avg_volume': avg_volume_feature(df_buy_grouped, rolling_freq).values,
-         'std_price': std_price_feature(df_buy_grouped, rolling_freq).values,
-         'avg_price': avg_price_feature(df_buy_grouped),
-         'avg_price_max': avg_price_max(df_buy_grouped).values,
-         'avg_diff_min_max':avg_diff_min_max(df_buy_grouped,rolling_freq).values,           #新添加特征
+         'std_rush_order': std_rush_order_feature(df, time_freq, rolling_freq).values,
+         'avg_rush_order': avg_rush_order_feature(df, time_freq, rolling_freq).values,
+         'std_rush_order_price':std_rush_order_price(df,time_freq,rolling_freq).values,  #新添加特征，有用
+         'std_rush_order_amount':std_rush_order_amount(df,time_freq,rolling_freq).values,#新添加特征,有用
+         'std_trades': std_trades_feature(df_grouped, rolling_freq).values,
+         'std_volume': std_volume_feature(df_grouped, rolling_freq).values,
+         'avg_volume': avg_volume_feature(df_grouped, rolling_freq).values,
+         'std_price': std_price_feature(df_grouped, rolling_freq).values,
+         'avg_price': avg_price_feature(df_grouped),
+         'avg_price_max': avg_price_max(df_grouped).values,
+         'avg_diff_min_max':avg_diff_min_max(df_grouped,rolling_freq).values,           #新添加特征
          'hour_sin': np.sin(2 * np.pi * date.hour/23),
          'hour_cos': np.cos(2 * np.pi * date.hour/23),
          'minute_sin': np.sin(2 * np.pi * date.minute / 59),
@@ -384,8 +329,8 @@ def compute_features():
     # build_features_multi(time_freq='15S', rolling_freq=144,prefix="my_new")     #设置rolling window 的大小
     # merge_features_and_label(time_freq='15S',rolling_freq=144,prefix="my_new")
 
-    build_features_multi(time_freq='15S', rolling_freq=240,prefix="my_new_buy_and_sell")     #设置rolling window 的大小
-    merge_features_and_label(time_freq='15S',rolling_freq=240,prefix="my_new_buy_and_sell")
+    build_features_multi(time_freq='5S', rolling_freq=360,prefix="my_new_buy_and_sell")     #设置rolling window 的大小
+    merge_features_and_label(time_freq='5S',rolling_freq=360,prefix="my_new_buy_and_sell")
 
     # build_features_multi(time_freq='15S', rolling_freq=720,prefix="my_new")      #设置rolling window 的大小
     # merge_features_and_label(time_freq='15S',rolling_freq=240,prefix="my_new")

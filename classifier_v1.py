@@ -51,6 +51,6 @@ def classifier(time_freq,rolling_window,prefix='my'):
 if __name__ == '__main__':
     start = datetime.datetime.now()
     # classifier(time_freq='25S')
-    classifier(time_freq='15S',rolling_window='240',prefix='my_new_sell')
+    classifier(time_freq='5S',rolling_window='360',prefix='my_new_buy_and_sell')
     # classifier(time_freq='5S')
     print(datetime.datetime.now() - start)
